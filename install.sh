@@ -22,6 +22,14 @@ apt update
 apt upgrade
 apt install -y git openssh-server
 
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+apt update
+apt install -y mongodb-org
+chown --recursive mongodb.mongodb /var/lib/mongodb
+systemctl start mongod
+systemctl enable mongod
+
 if [ ! -z $VM ]
 then
 cat > /etc/netplan/02-hostonly.yaml <<EOF
@@ -44,6 +52,7 @@ autologin-user=$USER
 autologin-user-timeout=5
 EOF
 # Chrome
+  apt install -y xdg-utils
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   dpkg -i google-chrome-stable_current_amd64.deb
   rm google-chrome-stable_current_amd64.deb
@@ -57,25 +66,19 @@ EOF
   ln -s robomongo/robo3t-1.3.1-linux-x86_64-7419c406/bin/robo3t .
 fi
 
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
-wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
-apt update
-apt install -y mongodb-org
-chown --recursive mongodb.mongodb /var/lib/mongodb
-systemctl start mongod
-systemctl enable mongod
 apt install -y python-pip python3-venv
 
 # Qui uscire da root e fare come studente nella sua home
-su $USER
-
+sudo -i -u $USER bash << EOF
 cd
+python3 -m venv lidaEnv
 source lidaEnv/bin/activate
-pip install pymongo[tls] dnspython gunicorn
+#pip install pymongo[tls] dnspython gunicorn
 git clone $REPO
 cd lida
 git checkout $BRANCH
 pip install -r requirements.txt
+EOF
 
 echo "Now run:"
 echo "  development server: python lida_app.py or"
