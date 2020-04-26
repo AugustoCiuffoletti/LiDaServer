@@ -57,7 +57,7 @@ EOF
   dpkg -i google-chrome-stable_current_amd64.deb
   rm google-chrome-stable_current_amd64.deb
 # Robo3t
-  mkdir /usr/local/bin/robomongo
+  mkdir -p /usr/local/bin/robomongo
   cd /usr/local/bin/robomongo
   wget https://download-test.robomongo.org/linux/robo3t-1.3.1-linux-x86_64-7419c406.tar.gz
   tar -xvzf robo3t-1.3.1-linux-x86_64-7419c406.tar.gz
