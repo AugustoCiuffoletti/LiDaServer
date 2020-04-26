@@ -3,8 +3,8 @@ set -e
 export DESKTOP="yes"    # Comment if graphical desktop is not required
 export VM="yes"         # Comment if VirtualBox VM is not required
 
-export REPO=https://github.com/davivcu/lida
-export BRANCH=experimental/login
+export REPO=https://bitbucket.com/AugustoCiuffoletti/mlida
+export BRANCH=login
 export USER=studente
 
 if [[ $EUID -ne 0 ]]; then
@@ -73,7 +73,7 @@ sudo -i -u $USER bash << EOF
 cd
 python3 -m venv lidaEnv
 source lidaEnv/bin/activate
-#pip install pymongo[tls] dnspython gunicorn
+pip install pymongo[tls] dnspython gunicorn
 git clone $REPO
 cd lida
 git checkout $BRANCH
@@ -81,5 +81,8 @@ pip install -r requirements.txt
 EOF
 
 echo "Now run:"
-echo "  development server: python lida_app.py or"
-echo "  production server:  gunicorn --bind 0.0.0.0:5000 app:LidaApp"
+echo "  cd"
+echo "  source lidaEnv/bin/activate"
+echo "  cd mlida/server"
+echo '  python lida_app.py #development server, or'
+echo '  gunicorn --bind 0.0.0.0:5000 app:LidaApp # production server:  '
