@@ -3,8 +3,8 @@ set -e
 export DESKTOP="yes"    # Comment if graphical desktop is not required
 export VM="yes"         # Comment if VirtualBox VM is not required
 
-export REPO=https://bitbucket.com/AugustoCiuffoletti/mlida
-export BRANCH=login
+export REPO=https://bitbucket.com/augusto_ciuffoletti/mlida
+export BRANCH=gunicorn
 export USER=studente
 
 if [[ $EUID -ne 0 ]]; then
