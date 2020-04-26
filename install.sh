@@ -63,7 +63,7 @@ EOF
   tar -xvzf robo3t-1.3.1-linux-x86_64-7419c406.tar.gz
   rm robo3t-1.3.1-linux-x86_64-7419c406.tar.gz
   cd ..
-  ln -s robomongo/robo3t-1.3.1-linux-x86_64-7419c406/bin/robo3t .
+  ln -sf robomongo/robo3t-1.3.1-linux-x86_64-7419c406/bin/robo3t .
 fi
 
 apt install -y python-pip python3-venv
