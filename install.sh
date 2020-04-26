@@ -1,26 +1,48 @@
-# export DESKTOP    # Uncomment if graphical desktop is required
-# export VM         # Uncomment if VirtualBox VM is required
+set -e
+
+export DESKTOP="yes"    # Comment if graphical desktop is not required
+export VM="yes"         # Comment if VirtualBox VM is not required
 
 export REPO=https://github.com/davivcu/lida
 export BRANCH=experimental/login
+export USER=studente
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
    exit 1
 fi
 
+# sudo senza password
+cat > /etc/sudoers.d/$USER <<EOF
+$USER ALL=(ALL:ALL) NOPASSWD:ALL
+EOF
+chmod 0440 /etc/sudoers.d/$USER
+
 apt update
 apt upgrade
-apt install git openssh-server
+apt install -y git openssh-server
 
-if [[ $VM ]];
+if [ ! -z $VM ]
 then
-# attivazione rete hostonly
+cat > /etc/netplan/02-hostonly.yaml <<EOF
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s8:
+      dhcp4: yes
+EOF
 fi
 
-if [[ $DESKTOP ]];
+if [ ! -z $DESKTOP ]
 then 
-  apt install lubuntu-core^ geany
+  apt install -y lubuntu-core^ geany curl
+  # login automatico in lightdm
+  cat > /etc/lightdm/lightdm.conf <<EOF
+[SeatDefaults]
+autologin-user=$USER
+autologin-user-timeout=5
+EOF
 # Chrome
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   dpkg -i google-chrome-stable_current_amd64.deb
@@ -42,20 +64,19 @@ apt install -y mongodb-org
 chown --recursive mongodb.mongodb /var/lib/mongodb
 systemctl start mongod
 systemctl enable mongod
-apt install python-pip python3-venv
+apt install -y python-pip python3-venv
 
 # Qui uscire da root e fare come studente nella sua home
+su $USER
 
+cd
 source lidaEnv/bin/activate
 pip install pymongo[tls] dnspython gunicorn
 git clone $REPO
 cd lida
 git checkout $BRANCH
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 
 echo "Now run:"
 echo "  development server: python lida_app.py or"
 echo "  production server:  gunicorn --bind 0.0.0.0:5000 app:LidaApp"
-
- 
-
