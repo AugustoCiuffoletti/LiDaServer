@@ -24,7 +24,7 @@ apt -y upgrade
 apt install -y git openssh-server
 
 
-if [ ! -z $VM ]
+if [[ ! -z $VM ]]
 then
 cat > /etc/netplan/02-hostonly.yaml <<EOF
 network:
@@ -36,7 +36,7 @@ network:
 EOF
 fi
 
-if [ ! -z $DESKTOP ]
+if [[ ! -z $DESKTOP ]]
 then 
   apt install -y lubuntu-core^ geany curl
   # automatic login in lightdm
