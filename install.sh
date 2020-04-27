@@ -1,7 +1,8 @@
+#! /bin/bash
 set -e
 
 export DESKTOP="yes"    # Comment if graphical desktop is not required
-export VM="yes"         # Comment if VirtualBox VM is not required
+export VM="yes"         # Comment if VirtualBox VM configuration is not required
 
 export REPO=https://bitbucket.com/augusto_ciuffoletti/mlida
 export BRANCH=gunicorn
@@ -12,23 +13,16 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# sudo senza password
+# sudo without password
 cat > /etc/sudoers.d/$USER <<EOF
 $USER ALL=(ALL:ALL) NOPASSWD:ALL
 EOF
 chmod 0440 /etc/sudoers.d/$USER
 
 apt update
-apt upgrade
+apt -y upgrade
 apt install -y git openssh-server
 
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
-wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
-apt update
-apt install -y mongodb-org
-chown --recursive mongodb.mongodb /var/lib/mongodb
-systemctl start mongod
-systemctl enable mongod
 
 if [ ! -z $VM ]
 then
@@ -45,7 +39,7 @@ fi
 if [ ! -z $DESKTOP ]
 then 
   apt install -y lubuntu-core^ geany curl
-  # login automatico in lightdm
+  # automatic login in lightdm
   cat > /etc/lightdm/lightdm.conf <<EOF
 [SeatDefaults]
 autologin-user=$USER
@@ -66,23 +60,27 @@ EOF
   ln -sf robomongo/robo3t-1.3.1-linux-x86_64-7419c406/bin/robo3t .
 fi
 
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+apt update
+apt install -y mongodb-org
+chown --recursive mongodb.mongodb /var/lib/mongodb
+systemctl start mongod
+systemctl enable mongod
 apt install -y python-pip python3-venv
 
-# Qui uscire da root e fare come studente nella sua home
+# The rest is executed as user at home
 sudo -i -u $USER bash << EOF
 cd
 python3 -m venv lidaEnv
 source lidaEnv/bin/activate
 pip install pymongo[tls] dnspython gunicorn
 git clone $REPO
-cd lida
+cd mlida
 git checkout $BRANCH
 pip install -r requirements.txt
 EOF
 
+# See also run.sh script
 echo "Now run:"
-echo "  cd"
-echo "  source lidaEnv/bin/activate"
-echo "  cd mlida/server"
-echo '  python lida_app.py #development server, or'
-echo '  gunicorn --bind 0.0.0.0:5000 app:LidaApp # production server:  '
+cat run.sh
