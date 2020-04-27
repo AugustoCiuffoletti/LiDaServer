@@ -83,4 +83,4 @@ EOF
 
 # See also run.sh script
 echo "Now run:"
-cat run.sh
+cat LiDaServer/run.sh
