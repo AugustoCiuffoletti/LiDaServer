@@ -4,9 +4,7 @@ set -e
 export DESKTOP="yes"    # Comment if graphical desktop is not required
 export VM="yes"         # Comment if VirtualBox VM configuration is not required
 
-export REPO=https://bitbucket.com/augusto_ciuffoletti/mlida
-export BRANCH=gunicorn
-export USER=studente
+export USER=user
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
@@ -73,14 +71,7 @@ apt install -y python-pip python3-venv
 sudo -i -u $USER bash << EOF
 cd
 python3 -m venv lidaEnv
-source lidaEnv/bin/activate
-pip install pymongo[tls] dnspython gunicorn
-git clone $REPO
-cd mlida
-git checkout $BRANCH
-pip install -r requirements.txt
-EOF
-
-# See also run.sh script
-echo "Now run:"
-cat LiDaServer/run.sh
+echo "New python environment lidaEnv created"
+echo "To activate:"
+echo "  \$ source ~/lidaEnv/bin/activate"
+echo "Now clone your favorite LIDA repo and follow the instructions"
