@@ -1,32 +1,55 @@
 # LiDaServer
 
-Si parte da una macchina ubuntu minima: nell'ultimo passo tasksel si lascia tutto in bianco.
+This repo contains the instructions and the script to install the server for the LIDA annotator service. The server contains all needed to run the web server and the MongoDB NoSQL service. The script has been tested on a VirtualBox virtual machine, and needs to be adapted for different uses. The current configuration script envisions a VirtualBox VM with a graphical desktop, which may be unnecessary for a production server. This option too has not been tested. As is, the generated VM is appropriate for testing, debugging, and demonstration purposes.
 
-Poi si avvia la macchina virtuale e si installa git
+## Hardware requirements
+
+The hardware mounts a 64-bit CPU, with 1GB Ram and a 6GB HD. Such configuration leaves around 1GB for the database, which is deemed sufficient for testing and developing.
+
+## Installation of the base system
+
+The base machine is configured using the **minimal Ubuntu** installation disk. Follow the installation wizard without installing any package during the final *tasksel* phase.
+
+## LIDA server configuration
+
+Once the installation terminates, reboot the machine and install the git tool:
 
     $ sudo apt update
     $ sudo apt install git
 
-Poi si clona questo repository. 
+and clone this repository 
 
     $ git clone https://github.com/AugustoCiuffoletti/LiDaServer.git
+    $ cd LiDaServer
 
-Nella directory creata dal repo si edita il file install.sh per definire i pochi parametri variabili.
+A few parameters can be configured in the install.sh script:
 
-    $ cd LiDaInstall
+  * the switches for the non-graphical server, and to exclude the VirtualBox related configurations. Such options are not tested
+  * the name of the main user, in case you want to use a different one (default is **user** with password *user*)
+
+Edit the script with:
+
     $ nano install.sh
-    $ sudo 
 
-Il nome dell'utente e il repo e branch del software LIDA. Poi si da il comando:
+Finally run the script:
 
-    sudo bash install.sh
+    $ sudo bash install.sh
 
-Nell'interfaccia grafica è opportuno:
--) allargare il monitor a 1280x800
--) rimuovere dalle applicazioni lanciate al boot lo screensaver
--) impostare il background
+which is designed to run unattended.
 
-Per avviare il server è possibile eseguire i singoli comandi oppure lo script
+## VirtualBox VM tuning
 
-    $ run.sh
+-) enlarge the monitor to 1280x800
+-) remove the screensaver from autostart applications
+-) set the background with the provided one
+
+## Run the server
+
+Download the LIDA repository containing the LIDA environment you want to run and follow the instructions.
+
+The file run.sh illustrates an example of a run script to automate this last step.
+
+## Demo result
+
+The .ova of the resulting VM can be downloaded from this [link](https://drive.google.com/open?id=1R0Lle6xFBqdtjNha4e5o47UgEGf9xHvG) 
 
