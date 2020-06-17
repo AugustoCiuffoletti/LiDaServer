@@ -6,7 +6,7 @@ export VM="yes"         # Comment if VirtualBox VM configuration is not required
 
 export REPO=https://bitbucket.com/augusto_ciuffoletti/mlida
 export BRANCH=gunicorn
-export USER=studente
+export USER=user
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
